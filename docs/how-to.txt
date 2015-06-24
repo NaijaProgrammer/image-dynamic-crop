@@ -1,0 +1,22 @@
+1. Create your form, and echo the return value of the call to ImageUploadCrop::get_dynamic_crop_enabler() to enable/attach the dynamic crop functionality on your form
+   The function takes an array of values:
+   1. 'form_id' string (compulsory)
+   2. 'action_page' The form's action page (compulsory)
+   3. 'include_thumb_scale_details' boolean (optional, default false)
+   4. 'iframe_id' string (optional)
+   4. 'iframe_name' string (optional) 
+  e.g:
+  echo ImageUploadCrop::get_dynamic_crop_enabler(array('form_id'=>'upload_form', 'action_page'=>$action_page, 'include_thumb_scale_details'=>false, 'iframe_id'=>'dummy', 'iframe_name'=>'dummy') ); 
+
+2. After successfully processing your image upload, call ImageUploadCrop::process_img_crop(), to do the actual cropping and saving of your image to its final destination
+   The function takes an array of arguments:
+   1. 'temp_directory' string the temporary directory where you moved your uploaded file
+   2. 'upload_dir' string the name of the final directory where you wish to moved your cropped file
+   3. 'final_filename' string the name you wish the file to be saved as
+   4. 'file_extension' string the extension you wish to give the file, e.g jpg, gif, png 
+   5. 'width' string the width you wish the file to be cropped to (in pixels)
+   6. 'height' string the cropped image height
+   7. 'save_original_image' boolean specifies if you wish to save the original uploaded image
+   8. 'original_image_save_directory' string the directory to save the original image if the previous argument is set to TRUE
+
+NOTE: don't bother unlinking the temp uploaded file, it is handled automatically by this method

@@ -1,0 +1,10 @@
+#notice{ display:none; padding:5px 10px; background-color:#FF9; }
+#uploaded{ padding-left:30px; padding-bottom:20px; }
+#div_upload_thumb{ min-height:200px; }
+#div_upload_big{ min-height:450px; }
+#upload_thumb{ margin-top:20px; text-align:center; background-color:#FF9; padding:5px; }
+#uploaded{ float:left; width:455px; margin-right:10px; margin-bottom:20px; }
+#thumbnail{ float:left; width:270px; padding-left:10px; }
+#details{ font-size:11px; font-weight:bold; }
+#preview{ width:200px; height:200px; overflow:hidden; }
+.uperror{ padding:5px 10px; background-color:#C66; color:#FFF; margin-bottom:10px; }
