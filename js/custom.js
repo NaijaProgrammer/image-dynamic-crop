@@ -46,7 +46,11 @@
 			}
 		}
 	
-		$('#notice').text('Digesting...').fadeIn();
+		//$('#notice').text('Digesting...').fadeIn();
+		if(typeof uploadStatusCallback === 'function')
+		{
+			uploadStatusCallback();
+		}
 								  
 		iframeObj.onload = function()
 		{
