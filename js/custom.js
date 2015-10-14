@@ -1,5 +1,6 @@
 (function($) 
 {
+/*
 	function preview(img, selection) 
 	{
 		if (!selection.width || !selection.height)
@@ -25,12 +26,13 @@
 		jQuery('.width').val(selection.width);
 		jQuery('.height').val(selection.height); 
 	}
+*/
 
 	$("form").submit(function() 
 	{ 
 		var fname = jQuery(this).attr('name'); //this.name; //get the name of the form, the name of our dynamic form is 'upload_thumb'
 		var formVariables = getFormVariables(); //line added by Michael Orji, defined in the main php class
-		var iframeId = formVariables.iframeId; //ditto
+		var iframeId  = formVariables.iframeId; //ditto
 		var iframeObj = $O(iframeId); //ditto
 	
 		/*
@@ -46,11 +48,17 @@
 			}
 		}
 	
-		//$('#notice').text('Digesting...').fadeIn();
-		if(typeof uploadStatusCallback === 'function')
+		if(typeof formVariables.uploadStatusCallback === 'function')
 		{
-			uploadStatusCallback();
+			uploadStatusCallback = formVariables.uploadStatusCallback;
 		}
+		
+		if(typeof uploadStatusCallback !== 'function')
+		{
+			function uploadStatusCallback(){}
+		}
+		
+		uploadStatusCallback(); //$('#notice').text('Digesting...').fadeIn();
 								  
 		iframeObj.onload = function()
 		{
@@ -71,17 +79,15 @@
 			
 			if(fname != 'upload_thumb')
 			{								
-			var img = getImageFromIframe()
-		
-			/*
-			* dynamically create a large image view, and insert it before our dynamic form
-			*/
-			var bigImgView = document.createElement("div");
-			bigImgView.id = "div_upload_big";
-			$O('upload_thumb').parentNode.insertBefore( bigImgView, $O('upload_thumb') );
-		
-			//if(fname != 'upload_thumb')
-			//{ 
+				var img = getImageFromIframe()
+			
+				/*
+				* dynamically create a large image view, and insert it before our dynamic form
+				*/
+				var bigImgView = document.createElement("div");
+				bigImgView.id = "div_upload_big";
+				$O('upload_thumb').parentNode.insertBefore( bigImgView, $O('upload_thumb') );
+		 
 				/*
 				* set an id for our large image view
 				*/
@@ -93,41 +99,95 @@
 				*/
 				jQuery('.img_src').attr('value', img); /////// get image source , this will be passed into PHP
 
-				//display the image in the preview container
-				$Html('preview', '<img src="'+img+'" />');
+				if(formVariables.previewContainerId)
+				{
+					//display the image in the preview container
+					$Html(formVariables.previewContainerId, '<img src="'+img+'" />');
+				}
 				
 				//$Html('div_'+fname, '<img id="'+img_id+'" src="'+img+'" />');
 				$Html('div_upload_big', '<img id="'+img_id+'" src="'+img+'" />');
 				
-				fname = 'upload_thumb'; //set the name, so that else part below will work
+				fname    = 'upload_thumb'; //set the name, so that else part below will work
 			}
 		    
 			else if(fname == 'upload_thumb')
 			{
 				var img = getImageFromIframe();
-				$Html('div_upload_thumb', '<img id="" src="'+img+'" />'); //display the image in the thumbnail container
+				
+				if(typeof formVariables.cropSuccessCallback === 'function')
+				{
+					tryDisplayOutput(img);
+					var cropSuccessCallback = formVariables.cropSuccessCallback;
+				}
+				
+				if(typeof cropSuccessCallback !== 'function')
+				{
+					function cropSuccessCallback(croppedImageUrl)
+					{ 
+						tryDisplayOutput(croppedImageUrl);
+					}
+				}
+				
+				cropSuccessCallback(img);
+				
+				function tryDisplayOutput(img)
+				{
+					if(formVariables.outputContainerId)
+					{
+						$Html(formVariables.outputContainerId, '<img id="" src="'+img+'" />'); //display the image in the thumbnail container
+					}
+				}
 			}
-			
 
 			jQuery('#upload_thumb').show(); //display the dynamic form
 			
 			//area select plugin http://odyniec.net/projects/imgareaselect/examples.html 
 			jQuery('#big').imgAreaSelect({
-			aspectRatio: '1:1', 
-			handles: true,
-			fadeSpeed: 200,
-			resizeable:false,
-			maxHeight:150,
-			maxWidth:150,			
-			minHeight:100,
-			minWidth:50,			
-			onSelectChange: preview
+				aspectRatio: '1:1', 
+				handles: true,
+				fadeSpeed: 200,
+				resizeable:false,
+				maxHeight:150,
+				maxWidth:150,			
+				minHeight:100,
+				minWidth:50,			
+				onSelectChange: preview
 			});
 		
-			jQuery('#notice').fadeOut();
+			//jQuery('#notice').fadeOut();
 		
 			// we have to remove the values
 			jQuery('.width , .height , .x1 , .y1 , #file').val('');
+		}
+		
+		function preview(img, selection) 
+		{
+			if (!selection.width || !selection.height)
+			{
+				return;
+			}
+			
+			if( formVariables.previewContainerId )
+			{
+				//200 is the #preview dimension, change this to your liking
+				var scaleX = 200 / selection.width; 
+				var scaleY = 200 / selection.height;
+			
+				jQuery('#' + formVariables.previewContainerId + ' img').css({
+					width: Math.round(scaleX * jQuery('#big').attr('width')),
+					height: Math.round(scaleY * jQuery('#big').attr('height')),
+					marginLeft: -Math.round(scaleX * selection.x1),
+					marginTop: -Math.round(scaleY * selection.y1)
+				});
+			}
+		
+			jQuery('.x1').val(selection.x1);
+			jQuery('.y1').val(selection.y1);
+			jQuery('.x2').val(selection.x2);
+			jQuery('.y2').val(selection.y2);
+			jQuery('.width').val(selection.width);
+			jQuery('.height').val(selection.height); 
 		}
 	});
 })(jQuery);
