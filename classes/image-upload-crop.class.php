@@ -28,7 +28,7 @@ class ImageUploadCrop
 		'<script type="text/javascript" src="'. $app_url. '/js/jquery.imgareaselect.min.js"></script>'.
 		'<script type="text/javascript" src="'. $app_url. '/js/custom.js"></script>'.
 		
-		'<div id="notice">Digesting..</div>'.
+		//'<div id="notice">Digesting..</div>'.
 		'<div id="uploaded">'.
 		 '<form style="display:none;" name="upload_thumb" id="upload_thumb" method="post" action="'. $action_page. '?act=create-thumb" target="'. $iframe_name. '">'.
 		  '<input type="hidden" name="img_src" id="img_src" class="img_src" />'.
