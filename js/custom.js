@@ -28,7 +28,7 @@
 
 	$("form").submit(function() 
 	{ 
-		var fname = this.name; //get the name of the form, the name of our dynamic form is 'upload_thumb'
+		var fname = jQuery(this).attr('name'); //this.name; //get the name of the form, the name of our dynamic form is 'upload_thumb'
 		var formVariables = getFormVariables(); //line added by Michael Orji, defined in the main php class
 		var iframeId = formVariables.iframeId; //ditto
 		var iframeObj = $O(iframeId); //ditto
@@ -49,17 +49,25 @@
 		$('#notice').text('Digesting...').fadeIn();
 								  
 		iframeObj.onload = function()
-		{									
-			var img = trim(getIFrameContent(iframeObj)); 
+		{
+			function getImageFromIframe()
+			{
+				var img = trim(getIFrameContent(iframeObj)); 
 			
-			/*
-			* where the iframe's content contains more than just the image's url,
-			* get only the image url.
-			* Example of such a case, is in the integration of this plugin with the MultimediaManager plugin,
-			* whose iframe's body contains some scripts to run on successful upload.
-			*/
-			img = img.substring(0, img.indexOf(".")+4); //look for a better way to make sure we are retrieving the path to a valid image
-			//setIFrameContent(iframeId, ""); //just incase u need to put something else in the iframe, we don't want the image string conflicing with it
+				/*
+				* where the iframe's content contains more than just the image's url,
+				* get only the image url.
+				* Example of such a case, is in the integration of this plugin with the MultimediaManager plugin,
+				* whose iframe's body contains some scripts to run on successful upload.
+				*/
+				img = img.substring(0, img.indexOf(".")+4); //look for a better way to make sure we are retrieving the path to a valid image
+				//setIFrameContent(iframeId, ""); //just incase u need to put something else in the iframe, we don't want the image string conflicing with it
+				return img;
+			}
+			
+			if(fname != 'upload_thumb')
+			{								
+			var img = getImageFromIframe()
 		
 			/*
 			* dynamically create a large image view, and insert it before our dynamic form
@@ -68,12 +76,11 @@
 			bigImgView.id = "div_upload_big";
 			$O('upload_thumb').parentNode.insertBefore( bigImgView, $O('upload_thumb') );
 		
-			if(fname != 'upload_thumb')
-			{ 
+			//if(fname != 'upload_thumb')
+			//{ 
 				/*
-				* set a name and an id for our large image view
+				* set an id for our large image view
 				*/
-				fname = "upload_big"; //line added by Michael Orji
 				var img_id = 'big';
 				
 				/*
@@ -84,10 +91,19 @@
 
 				//display the image in the preview container
 				$Html('preview', '<img src="'+img+'" />');
+				
+				//$Html('div_'+fname, '<img id="'+img_id+'" src="'+img+'" />');
+				$Html('div_upload_big', '<img id="'+img_id+'" src="'+img+'" />');
+				
+				fname = 'upload_thumb'; //set the name, so that else part below will work
 			}
-		
-		
-			$Html('div_'+fname, '<img id="'+img_id+'" src="'+img+'" />');
+		    
+			else if(fname == 'upload_thumb')
+			{
+				var img = getImageFromIframe();
+				$Html('div_upload_thumb', '<img id="" src="'+img+'" />'); //display the image in the thumbnail container
+			}
+			
 
 			jQuery('#upload_thumb').show(); //display the dynamic form
 			
