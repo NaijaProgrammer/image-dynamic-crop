@@ -19,10 +19,10 @@ class ImageUploadCrop
 			'iframe_id'                   => '', 
 			'iframe_name'                 => '',
 			'crop_button_value'           => 'create thumbnail',
-			'upload_status_callback'      => 'function(){}', //javascript function
+			'upload_status_callback'      => '', //javascript function
 			'preview_container_id'        => '',
 			'output_container_id'         => '', //where the cropped image will be displayed, leave blank if you don't want to display the cropped output
-			'crop_success_callback'       => 'function(croppedImageUrl){}' //js function to handle successful cropping, this function is auto-passed the URL of the cropped image, if this function is defined,
+			'crop_success_callback'       => '' //js function to handle successful cropping, this function is auto-passed the URL of the cropped image, if this function is defined,
 			
 		);
 		
@@ -115,7 +115,8 @@ class ImageUploadCrop
 			     '$O("'. $form_id. '").setAttribute("target", "'. $iframe_name. '");'.
 			     'function getFormVariables()'.
 				 '{'.
-					'return {"formId":"'. $form_id. '", "iframeName":"'. $iframe_name. '", "iframeId":"'. $iframe_id. '"}'.
+					//'return {"formId":"'. $form_id. '", "iframeName":"'. $iframe_name. '", "iframeId":"'. $iframe_id. '"}'.
+					'return '. $json_string.
 				 '}'.
 				'</script>';
 		}
