@@ -11,12 +11,28 @@ class ImageUploadCrop
 	*/
 	public static function get_dynamic_crop_enabler( $opts = array() )
 	{
-		$defs = array('form_id'=>'', 'action_page'=>$_SERVER['PHP_SELF'], 'include_thumb_scale_details'=>false, 'iframe_id'=>'', 'iframe_name'=>'');
+		$defs = array
+		(
+			'form_id'                     => '', 
+			'action_page'                 => $_SERVER['PHP_SELF'], 
+			'include_thumb_scale_details' => false, 
+			'iframe_id'                   => '', 
+			'iframe_name'                 => '',
+			'crop_button_value'           => 'create thumbnail',
+			'upload_status_callback'      => 'function(){}', //javascript function
+			'preview_container_id'        => '',
+			'output_container_id'         => '', //where the cropped image will be displayed, leave blank if you don't want to display the cropped output
+			'crop_success_callback'       => 'function(croppedImageUrl){}' //js function to handle successful cropping, this function is auto-passed the URL of the cropped image, if this function is defined,
+			
+		);
+		
 		ArrayManipulator::copy_array($defs, $opts);
+		
 		foreach($defs AS $key => $value)
 		{
 			$$key = $value;
 		}
+		
 		$app_url = self::_get_app_url(); 
 		$iframe_name = !empty($iframe_name) ? $iframe_name : "upload_target"; 
 
@@ -38,38 +54,35 @@ class ImageUploadCrop
 		  '<input type="hidden" id="x1" class="x1" name="x" />'.
 		  '<input type="hidden" id="y2" class="y2" name="y1" />'.
 		  '<input type="hidden" id="x2" class="x2" name="x1" />'.                        
-		  '<input type="submit" value="create thumbnail" />'.
+		  '<input type="submit" value="'. $crop_button_value. '" />'.
 		 '</form>'.   
-		'</div>'.
-		'<div id="thumbnail">'.
-		 '<h3>Preview</h3>'.
-		 '<div id="preview"></div>'.                            
-		 '<h3>Thumbnail</h3>'.
-		 '<div id="div_upload_thumb"></div>';
+		'</div>';
 		 
 		 if($include_thumb_scale_details)
 		 {
 			$html .= ''.
-			'<div id="details">'.
-			 '<table width="200">'.
-              '<tr><td colspan="2">Image Source<br /><input type="text" name="img_src" class="img_src" size="35" /></td></tr>'.
-              '<tr>'.
-               '<td>Height<br /><input type="text" name="height" class="height" size="5" /></td>'.
-               '<td>Width<br /><input type="text" name="width" class="width" size="5"/></td>'.
-              '</tr>'.
-              '<tr>'.
-               '<td>Y1<br /><input type="text" class="y1"  size="5"/></td>'.
-               '<td>X1<br /><input type="text" class="x1" size="5" /></td>'.
-              '</tr>'.
-              '<tr>'.
-               '<td>Y2<br /><input type="text" class="y2" size="5" /></td>'.
-               '<td>X2<br /><input type="text" class="x2" size="5" /></td>'.
-              '</tr>'.
-             '</table>'.
-            '</div>';
+			'<div id="thumbnail">'.
+			 '<div id="details">'.
+			  '<table width="200">'.
+               '<tr><td colspan="2">Image Source<br /><input type="text" name="img_src" class="img_src" size="35" /></td></tr>'.
+               '<tr>'.
+                '<td>Height<br /><input type="text" name="height" class="height" size="5" /></td>'.
+                '<td>Width<br /><input type="text" name="width" class="width" size="5"/></td>'.
+               '</tr>'.
+               '<tr>'.
+                '<td>Y1<br /><input type="text" class="y1"  size="5"/></td>'.
+                '<td>X1<br /><input type="text" class="x1" size="5" /></td>'.
+               '</tr>'.
+               '<tr>'.
+                '<td>Y2<br /><input type="text" class="y2" size="5" /></td>'.
+                '<td>X2<br /><input type="text" class="x2" size="5" /></td>'.
+               '</tr>'.
+              '</table>'.
+             '</div>'.
+			'</div>';
 		 }
 		
-		$html .= '</div>';
+		$html .= '';
 
 		$create_iframe = empty($iframe_id) ? true : false;
 		if($create_iframe)
@@ -83,6 +96,20 @@ class ImageUploadCrop
 		}
 		if(!empty($form_id))
 		{
+			$json_string = self::_create_json_string
+			(
+				array
+				(
+					'formId'                 => $form_id,
+					'iframeName'             => $iframe_name,
+					'iframeId'               => $iframe_id,
+					'uploadStatusCallback'   => $upload_status_callback,
+					'previewContainerId'     => $preview_container_id,
+					'outputContainerId'      => $output_container_id,
+					'cropSuccessCallback'    => $crop_success_callback
+				)
+			);
+			
 			$html .= ''.
     			'<script type="text/javascript">'.
 			     '$O("'. $form_id. '").setAttribute("target", "'. $iframe_name. '");'.
@@ -95,6 +122,7 @@ class ImageUploadCrop
 		
 		return $html;
 	}
+	
 	public static function process_img_crop($opts=array())
 	{
 		$app_directory = self::_get_app_directory();
@@ -154,6 +182,7 @@ class ImageUploadCrop
 			self::_resizeImg($big_arr);	
 		}
 	}
+	
 	private static function _resizeImg($arr)
 	{
 		$uploaddir 	= $arr['uploaddir'];
@@ -179,6 +208,7 @@ class ImageUploadCrop
 		
 		exit;
 	}
+	
 	private static function _resizeThumb($arr)
 	{	
 		$temp_file_path = $arr['img_src'];
@@ -207,6 +237,7 @@ class ImageUploadCrop
 			}
 		}
 	}
+	
 	private static function _cropImg($arr)
 	{
 		include_once(self::_get_app_directory(). '/lib/wideimage/WideImage.php');
@@ -230,13 +261,35 @@ class ImageUploadCrop
 		}
 		return DirectoryInspector::get_resource_url( $final_filename, self::_get_app_url() );
 	}
+	
+	private static function _create_json_string($data=array(), $output=false)
+	{
+		$str = '{';
+		
+		foreach($data AS $key => $value)
+		{
+			$value = ( is_string($value) ? ('"'. $value. '"') : $value );
+			$str .= '"'. $key. '":'. $value. ', ';
+		}
+		$str  = substr($str, 0, -2); //remove trailing space and comma (, )
+		$str .= '}';
+		
+		if($output)
+		{
+			header("Content-Type: application/json");
+			echo $str;
+		}
+		
+		return $str;
+	}
+	
 	private static function _get_app_directory()
 	{
 		return IMAGE_CROP_APP_DIR_PATH;
 	}
+	
 	private static function _get_app_url()
 	{
 		return IMAGE_CROP_APP_HTTP_PATH;
 	}
 }
-?>
