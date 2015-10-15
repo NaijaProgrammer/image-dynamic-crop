@@ -84,7 +84,7 @@ class ImageUploadCrop
 		
 		$html .= '';
 
-		$create_iframe = empty($iframe_id) ? true : false;
+		$create_iframe = ( ( empty($iframe_id) && empty($iframe_name) ) ? true : false );
 		if($create_iframe)
 		{
 			$iframe_id = "upload_target";
