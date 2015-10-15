@@ -69,7 +69,7 @@
 			uploadStatusCallback(); //$('#notice').text('Digesting...').fadeIn();
 		}
 					  
-		iframeObj.onload = 
+		//iframeObj.onload = 
 		EventManager.attachEventListener(iframeObj, 'load', function()
 		{
 			function getImageFromIframe()
@@ -112,7 +112,7 @@
 				/*
 				* set an id for our large image view
 				*/
-				var img_id = 'big';
+				var img_id = bigImgView.id + '-big'; //'big';
 				
 				/*
 				* set the src attribute of our dynamic form hidden input field called img_src to the image loaded from our Iframe.
@@ -156,7 +156,8 @@
 			jQuery('#upload_thumb').show(); //display the dynamic form
 			
 			//area select plugin http://odyniec.net/projects/imgareaselect/examples.html 
-			jQuery('#big').imgAreaSelect({
+			//jQuery('#big').imgAreaSelect({
+			jQuery('#' + img_id).imgAreaSelect({
 				aspectRatio: '1:1', 
 				handles: true,
 				fadeSpeed: 200,
