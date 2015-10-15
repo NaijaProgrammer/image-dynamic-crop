@@ -95,6 +95,7 @@
 				if(formVariables.inputContainerId)
 				{
 					var bigImgView = $O(formVariables.inputContainerId);
+					bigImgView.id  = formVariables.inputContainerId;
 				}
 				
 				else
@@ -126,7 +127,8 @@
 				}
 				
 				//$Html('div_'+fname, '<img id="'+img_id+'" src="'+img+'" />');
-				$Html('div_upload_big', '<img id="'+img_id+'" src="'+img+'" />');
+				//$Html('div_upload_big', '<img id="'+img_id+'" src="'+img+'" />');
+				$Html(bigImgView.id, '<img id="'+img_id+'" src="'+img+'" />');
 				
 				fname = 'upload_thumb'; //set the name, so that else part below will work
 			}
