@@ -89,11 +89,20 @@
 			{								
 				var img = getImageFromIframe()
 			
-				/*
-				* dynamically create a large image view, and insert it before our dynamic form
-				*/
-				var bigImgView = document.createElement("div");
-				bigImgView.id = "div_upload_big";
+				if(formVariables.inputContainerId)
+				{
+					var bigImgView = $O(formVariables.inputContainerId);
+				}
+				
+				else
+				{
+					/*
+					* dynamically create a large image view, and insert it before our dynamic form
+					*/
+					var bigImgView = document.createElement("div");
+					bigImgView.id = "div_upload_big";
+				}
+				
 				$O('upload_thumb').parentNode.insertBefore( bigImgView, $O('upload_thumb') );
 		 
 				/*
