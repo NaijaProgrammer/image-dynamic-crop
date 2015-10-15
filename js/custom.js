@@ -34,7 +34,17 @@
 		var formVariables = getFormVariables(); //line added by Michael Orji, defined in the main php class
 		var iframeId  = formVariables.iframeId; //ditto
 		var iframeObj = $O(iframeId); //ditto
-	
+		
+		/*
+		for(var x in formVariables)
+		{
+			console.log(x + '=' + formVariables[x] + "\r\n");
+		}
+		var ev = new Function(formVariables.cropSuccessCallback);
+		
+		alert(typeof ev);
+		*/
+		
 		/*
 		* if the form being submitted is our dynamic form,
 		* check to ensure they have made a thumbnail selection
@@ -47,19 +57,17 @@
 				return false;
 			}
 		}
-	
-		if(typeof formVariables.uploadStatusCallback === 'function')
+	/* Keep working on this
+		if(typeof formVariables.uploadStatusCallback === 'string')
 		{
-			uploadStatusCallback = formVariables.uploadStatusCallback;
+			uploadStatusCallback = new Function(formVariables.uploadStatusCallback);
 		}
-		
-		if(typeof uploadStatusCallback !== 'function')
-		{
-			function uploadStatusCallback(){}
+	*/	
+		if(typeof uploadStatusCallback === 'function')
+		{ 
+			uploadStatusCallback(); //$('#notice').text('Digesting...').fadeIn();
 		}
-		
-		uploadStatusCallback(); //$('#notice').text('Digesting...').fadeIn();
-								  
+					  
 		iframeObj.onload = function()
 		{
 			function getImageFromIframe()
@@ -108,35 +116,26 @@
 				//$Html('div_'+fname, '<img id="'+img_id+'" src="'+img+'" />');
 				$Html('div_upload_big', '<img id="'+img_id+'" src="'+img+'" />');
 				
-				fname    = 'upload_thumb'; //set the name, so that else part below will work
+				fname = 'upload_thumb'; //set the name, so that else part below will work
 			}
 		    
 			else if(fname == 'upload_thumb')
-			{
+			{ 
 				var img = getImageFromIframe();
-				
-				if(typeof formVariables.cropSuccessCallback === 'function')
+				if(formVariables.outputContainerId)
 				{
-					tryDisplayOutput(img);
-					var cropSuccessCallback = formVariables.cropSuccessCallback;
+					$Html(formVariables.outputContainerId, '<img id="" src="'+img+'" />'); //display the image in the thumbnail container
 				}
 				
-				if(typeof cropSuccessCallback !== 'function')
+			/* Keep working on this	
+				if(typeof formVariables.cropSuccessCallback === 'string')
 				{
-					function cropSuccessCallback(croppedImageUrl)
-					{ 
-						tryDisplayOutput(croppedImageUrl);
-					}
+					cropSuccessCallback = new Function(formVariables.cropSuccessCallback);
 				}
-				
-				cropSuccessCallback(img);
-				
-				function tryDisplayOutput(img)
-				{
-					if(formVariables.outputContainerId)
-					{
-						$Html(formVariables.outputContainerId, '<img id="" src="'+img+'" />'); //display the image in the thumbnail container
-					}
+			*/	
+				if(typeof cropSuccessCallback === 'function')
+				{  
+					cropSuccessCallback(img);
 				}
 			}
 
