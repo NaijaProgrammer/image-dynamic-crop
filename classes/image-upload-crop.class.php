@@ -90,7 +90,7 @@ class ImageUploadCrop
 			$iframe_id = "upload_target";
 			$html .= '<iframe id="'.$iframe_id.'" name="'.$iframe_name.'" src="" style="width:100%;height:400px;border:1px solid #ccc; display:normal"></iframe>';
 		}
-		if(!$create_iframe)
+		if( !$create_iframe && $iframe_id )
 		{
 			$html .= '<script type="text/javascript">document.getElementById("'. $iframe_id. '").setAttribute("name", "'. $iframe_name. '");</script>';	
 		}
