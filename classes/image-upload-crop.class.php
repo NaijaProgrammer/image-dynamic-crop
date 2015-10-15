@@ -20,10 +20,10 @@ class ImageUploadCrop
 			'iframe_name'                 => '',
 			'crop_button_value'           => 'create thumbnail',
 			'upload_status_callback'      => '', //javascript function
+			'input_container_id'          => '', //the container to hold the original image which the user can drag over and do the cropping
 			'preview_container_id'        => '',
 			'output_container_id'         => '', //where the cropped image will be displayed, leave blank if you don't want to display the cropped output
 			'crop_success_callback'       => '' //js function to handle successful cropping, this function is auto-passed the URL of the cropped image, if this function is defined,
-			
 		);
 		
 		ArrayManipulator::copy_array($defs, $opts);
@@ -104,6 +104,7 @@ class ImageUploadCrop
 					'iframeName'             => $iframe_name,
 					'iframeId'               => $iframe_id,
 					'uploadStatusCallback'   => $upload_status_callback,
+					'inputContainerId'       => $input_container_id,
 					'previewContainerId'     => $preview_container_id,
 					'outputContainerId'      => $output_container_id,
 					'cropSuccessCallback'    => $crop_success_callback
