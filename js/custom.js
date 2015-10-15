@@ -33,7 +33,8 @@
 		var fname = jQuery(this).attr('name'); //this.name; //get the name of the form, the name of our dynamic form is 'upload_thumb'
 		var formVariables = getFormVariables(); //line added by Michael Orji, defined in the main php class
 		var iframeId  = formVariables.iframeId; //ditto
-		var iframeObj = $O(iframeId)  || jQuery('iframe[name="' + iframeName + '"]'); //ditto
+		var iframeName = formVariables.iframeName; //ditto
+		var iframeObj = $O(iframeId) ? $O(iframeId) : document.getElementsByName(iframeName)[0]; //$O(iframeId)  || jQuery('iframe[name="' + iframeName + '"]'); //ditto
 		
 		/*
 		for(var x in formVariables)
@@ -68,7 +69,8 @@
 			uploadStatusCallback(); //$('#notice').text('Digesting...').fadeIn();
 		}
 					  
-		iframeObj.onload = function()
+		iframeObj.onload = 
+		EventManager.attachEventListener(iframeObj, 'load', function()
 		{
 			function getImageFromIframe()
 			{
@@ -80,7 +82,8 @@
 				* Example of such a case, is in the integration of this plugin with the MultimediaManager plugin,
 				* whose iframe's body contains some scripts to run on successful upload.
 				*/
-				img = img.substring(0, img.indexOf(".")+4); //look for a better way to make sure we are retrieving the path to a valid image
+				//img = img.substring(0, img.indexOf(".")+4);
+				img = img.substring(img.lastIndexOf('http:'), img.lastIndexOf(".")+4); //look for a better way to make sure we are retrieving the path to a valid image
 				//setIFrameContent(iframeId, ""); //just incase u need to put something else in the iframe, we don't want the image string conflicing with it
 				return img;
 			}
@@ -168,6 +171,7 @@
 			// we have to remove the values
 			jQuery('.width , .height , .x1 , .y1 , #file').val('');
 		}
+		);
 		
 		function preview(img, selection) 
 		{
