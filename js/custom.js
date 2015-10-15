@@ -33,7 +33,7 @@
 		var fname = jQuery(this).attr('name'); //this.name; //get the name of the form, the name of our dynamic form is 'upload_thumb'
 		var formVariables = getFormVariables(); //line added by Michael Orji, defined in the main php class
 		var iframeId  = formVariables.iframeId; //ditto
-		var iframeObj = $O(iframeId); //ditto
+		var iframeObj = $O(iframeId)  || jQuery('iframe[name="' + iframeName + '"]'); //ditto
 		
 		/*
 		for(var x in formVariables)
