@@ -157,7 +157,7 @@
 			
 			//area select plugin http://odyniec.net/projects/imgareaselect/examples.html 
 			//jQuery('#big').imgAreaSelect({
-			jQuery('#' + img_id).imgAreaSelect({
+			$('#' + img_id).imgAreaSelect({
 				aspectRatio: '1:1', 
 				handles: true,
 				fadeSpeed: 200,
