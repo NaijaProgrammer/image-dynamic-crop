@@ -190,8 +190,8 @@
 				var scaleY = 200 / selection.height;
 			
 				jQuery('#' + formVariables.previewContainerId + ' img').css({
-					width: Math.round(scaleX * jQuery('#big').attr('width')),
-					height: Math.round(scaleY * jQuery('#big').attr('height')),
+					width: Math.round(scaleX * jQuery('#' + img_id).attr('width')),
+					height: Math.round(scaleY * jQuery('#' + img_id).attr('height')),
 					marginLeft: -Math.round(scaleX * selection.x1),
 					marginTop: -Math.round(scaleY * selection.y1)
 				});
