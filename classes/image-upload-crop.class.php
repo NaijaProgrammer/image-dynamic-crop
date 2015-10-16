@@ -33,8 +33,9 @@ class ImageUploadCrop
 			$$key = $value;
 		}
 		
-		$app_url = self::_get_app_url(); 
-		$iframe_name = !empty($iframe_name) ? $iframe_name : "upload_target"; 
+		$app_url     = self::_get_app_url(); 
+		$iframe_name = !empty($iframe_name) ? $iframe_name : "upload_target";
+		$qs_prefix   = self::_url_contains_query_string($action_page) ? '&' : '?';
 
 		$html = ''.
 		'<link rel="stylesheet" type="text/css" href="'. $app_url. '/css/imgareaselect-default.css" />'.
@@ -46,7 +47,7 @@ class ImageUploadCrop
 		
 		//'<div id="notice">Digesting..</div>'.
 		'<div id="uploaded">'.
-		 '<form style="display:none;" name="upload_thumb" id="upload_thumb" method="post" action="'. $action_page. '?act=create-thumb" target="'. $iframe_name. '">'.
+		 '<form style="display:none;" name="upload_thumb" id="upload_thumb" method="post" action="'. $action_page. $qs_prefix. 'act=create-thumb" target="'. $iframe_name. '">'.
 		  '<input type="hidden" name="img_src" id="img_src" class="img_src" />'.
 		  '<input type="hidden" name="height" value="0" id="height" class="height" />'.
 		  '<input type="hidden" name="width" value="0" id="width" class="width" />'.  
@@ -293,5 +294,11 @@ class ImageUploadCrop
 	private static function _get_app_url()
 	{
 		return IMAGE_CROP_APP_HTTP_PATH;
+	}
+	
+	private static function _url_contains_query_string($url)
+	{
+		//@credit: http://stackoverflow.com/a/7864244/1743192
+		return parse_url($url, PHP_URL_QUERY);
 	}
 }
