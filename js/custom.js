@@ -150,6 +150,29 @@
 					$Html(formVariables.outputContainerId, '<img id="" src="'+img+'" />'); //display the image in the thumbnail container
 				}
 				
+				if( formVariables.displayCropWindowAsPopup && (typeof $( "#uploaded" ).dialog( "instance" ) === 'object') )
+				{
+					$( "#uploaded" ).dialog( "instance" ).close();
+					hideImageAreaSelect();
+					function hideImageAreaSelect()
+					{   //credits: http://stackoverflow.com/questions/3709633/jquery-imgareaselect-hide-show
+						$('div.imgareaselect-selection').hide();
+						$('div.imgareaselect-border1').hide();
+						$('div.imgareaselect-border2').hide();
+						$('div.imgareaselect-border3').hide();
+						$('div.imgareaselect-border4').hide();
+						$('div.imgareaselect-handle').hide();
+						$('div.imgareaselect-outer').hide();
+						
+						/* This is currently having issues, but it is preferable
+						//credits: http://stackoverflow.com/a/3709701/1743192
+						var ias = $('#' + img_id).imgAreaSelect({ instance: true });
+						ias.setOptions({ hide: true });
+						ias.update();
+						*/
+					}
+				}
+				
 			/* Keep working on this	
 				if(typeof formVariables.cropSuccessCallback === 'string')
 				{
@@ -160,16 +183,10 @@
 				{  
 					cropSuccessCallback(img);
 				}
-				
-				if(typeof cropContainerDialogInstance === 'object')
-				{
-					$( "#uploaded" ).dialog( "instance" ).dialog("close");
-				}
 			}
 
 			jQuery('#upload_thumb').show(); //display the dynamic form
 			
-			alert(typeof $('#' + img_id).imgAreaSelect);
 			//area select plugin http://odyniec.net/projects/imgareaselect/examples.html 
 			//jQuery('#big').imgAreaSelect({
 			$('#' + img_id).imgAreaSelect({
