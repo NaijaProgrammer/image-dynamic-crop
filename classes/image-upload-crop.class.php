@@ -209,7 +209,24 @@ class ImageUploadCrop
 		$tempdir	= $arr['tempdir'];
 		$image_file = $arr['image_file'];
 		$img_parts 	= pathinfo($image_file['name']);
-		$new_name 	= strtolower($arr['final_filename']. '.'. $arr['file_extension']); //.'.'.$img_parts['extension']);
+		
+		/*
+		* on *nix systems, filenames are case-sensitive, A live test threw the below Error:
+		* Fatal error: Uncaught exception 'WideImage_InvalidImageSourceException' with message 
+			'File '/home/beta/public_html/admin/uploads/holiday-packages-images/images/original//lighthouse.jpg' 
+			appears to be an invalid image source.' 
+			in /home/beta/public_html/includes/plugins/image-dynamic-crop/lib/wideimage/WideImage.php:226 
+			Stack trace: #0 [internal function]: WideImage::loadFromFile('/home/beta/publ...') #1 
+			/home/beta/public_html/includes/plugins/image-dynamic-crop/lib/wideimage/WideImage.php(184): 
+			call_user_func(Array, '/home/beta/publ...') 
+			#2 /home/beta/public_html/includes/plugins/image-dynamic-crop/classes/image-upload-crop.class.php(280):
+			WideImage::load('/home/beta/publ...') #3 /home/beta/public_html/includes/plugins/image-dynamic-crop/classes/image-upload-crop.class.php(219): 
+			ImageUploadCrop::_cropImg(Array) #4 /home/beta/public_html/includes/plugins/image-dynamic-crop/classes/image-upload-crop.class.php(202): 
+			ImageUploadCrop::_resizeImg(Array) #5 
+			/home/beta/public_html/includes/plugins/multimedia-manager/includes/class in 
+			/home/beta/public_html/includes/plugins/image-dynamic-crop/lib/wideimage/WideImage.php" />
+		*/
+		$new_name 	= $arr['final_filename']. '.'. $arr['file_extension']; //strtolower($arr['final_filename']. '.'. $arr['file_extension']); //.'.'.$img_parts['extension']);
 		
 		$arr['temp_file_destination']  = $tempdir;
 		$arr['temp_file_name']         = $new_name;
