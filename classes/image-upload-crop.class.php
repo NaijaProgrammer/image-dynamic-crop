@@ -13,17 +13,18 @@ class ImageUploadCrop
 	{
 		$defs = array
 		(
-			'form_id'                     => '', 
-			'action_page'                 => $_SERVER['PHP_SELF'], 
-			'include_thumb_scale_details' => false, 
-			'iframe_id'                   => '', 
-			'iframe_name'                 => '',
-			'crop_button_value'           => 'create thumbnail',
-			'upload_status_callback'      => '', //javascript function
-			'input_container_id'          => '', //the container to hold the original image which the user can drag over and do the cropping
-			'preview_container_id'        => '',
-			'output_container_id'         => '', //where the cropped image will be displayed, leave blank if you don't want to display the cropped output
-			'crop_success_callback'       => '' //js function to handle successful cropping, this function is auto-passed the URL of the cropped image, if this function is defined,
+			'form_id'                      => '', 
+			'action_page'                  => $_SERVER['PHP_SELF'], 
+			'include_thumb_scale_details'  => false, 
+			'iframe_id'                    => '', 
+			'iframe_name'                  => '',
+			'crop_button_value'            => 'create thumbnail',
+			'display_crop_window_as_popup' => false, //if you wish to specify this option as false, when calling the method, specify it as 0(zero). For some reason, using the boolean false causes an error of 'unexpected token ,'
+			'upload_status_callback'       => '', //javascript function
+			'input_container_id'           => '', //the container to hold the original image which the user can drag over and do the cropping
+			'preview_container_id'         => '',
+			'output_container_id'          => '', //where the cropped image will be displayed, leave blank if you don't want to display the cropped output
+			'crop_success_callback'        => '' //js function to handle successful cropping, this function is auto-passed the URL of the cropped image, if this function is defined,
 		);
 		
 		ArrayManipulator::copy_array($defs, $opts);
@@ -40,9 +41,23 @@ class ImageUploadCrop
 		$html = ''.
 		'<link rel="stylesheet" type="text/css" href="'. $app_url. '/css/imgareaselect-default.css" />'.
 		'<link rel="stylesheet" type="text/css" href="'. $app_url. '/css/styles.css" />'. 
+		
 		'<script type="text/javascript" src="'. $app_url. '/js/JSLib.js"></script>'.
 		'<script type="text/javascript" src="'. $app_url. '/js/jquery.min.js"></script>'.
 		'<script type="text/javascript" src="'. $app_url. '/js/jquery.imgareaselect.min.js"></script>'.
+		
+		'';
+		
+		if($display_crop_window_as_popup)
+		{
+			$html .= ''.
+			'<link rel="stylesheet" type="text/css" href="'. $app_url. '/js/jquery-ui/jquery-ui-1.11.2.css" />'.
+			'<script type="text/javascript" src="'. $app_url. '/js/jquery-ui/jquery-ui-1.11.2.js"></script>'.
+			'';
+		}
+		
+		$html .= ''.
+		
 		'<script type="text/javascript" src="'. $app_url. '/js/custom.js"></script>'.
 		
 		//'<div id="notice">Digesting..</div>'.
@@ -85,6 +100,7 @@ class ImageUploadCrop
 		
 		$html .= '';
 
+		//$create_iframe = ( empty($iframe_id) ? true : false );
 		$create_iframe = ( ( empty($iframe_id) && empty($iframe_name) ) ? true : false );
 		if($create_iframe)
 		{
@@ -101,14 +117,15 @@ class ImageUploadCrop
 			(
 				array
 				(
-					'formId'                 => $form_id,
-					'iframeName'             => $iframe_name,
-					'iframeId'               => $iframe_id,
-					'uploadStatusCallback'   => $upload_status_callback,
-					'inputContainerId'       => $input_container_id,
-					'previewContainerId'     => $preview_container_id,
-					'outputContainerId'      => $output_container_id,
-					'cropSuccessCallback'    => $crop_success_callback
+					'formId'                   => $form_id,
+					'iframeName'               => $iframe_name,
+					'iframeId'                 => $iframe_id,
+					'displayCropWindowAsPopup' => $display_crop_window_as_popup,
+					'uploadStatusCallback'     => $upload_status_callback,
+					'inputContainerId'         => $input_container_id,
+					'previewContainerId'       => $preview_container_id,
+					'outputContainerId'        => $output_container_id,
+					'cropSuccessCallback'      => $crop_success_callback
 				)
 			);
 			
@@ -170,7 +187,7 @@ class ImageUploadCrop
 		* using the x and y values of hidden input fields created by the dynamic form
 		*/
 		if( isset($_GET['act']) && ($_GET['act'] == 'create-thumb') )
-		{
+		{ 
 			$thumb_arr = array_merge($arr, array('uploaddir'=>$upload_directory.'/', 'x'=>$_POST['x'], 'y'=>$_POST['y'], 'img_src'=>$_POST['img_src'], 'thumb'=>true ));
 			self::_resizeThumb($thumb_arr);
 		}
@@ -295,7 +312,7 @@ class ImageUploadCrop
 	{
 		return IMAGE_CROP_APP_HTTP_PATH;
 	}
-	
+
 	private static function _url_contains_query_string($url)
 	{
 		//@credit: http://stackoverflow.com/a/7864244/1743192
