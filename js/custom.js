@@ -190,7 +190,7 @@
 			//area select plugin http://odyniec.net/projects/imgareaselect/examples.html 
 			//jQuery('#big').imgAreaSelect({
 			$('#' + img_id).imgAreaSelect({
-				aspectRatio: '1:1', 
+				//aspectRatio: '1:1', 
 				handles: true,
 				fadeSpeed: 200,
 				resizeable:false,
