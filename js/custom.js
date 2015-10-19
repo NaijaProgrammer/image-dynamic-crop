@@ -73,7 +73,7 @@
 				* Example of such a case, is in the integration of this plugin with the MultimediaManager plugin,
 				* whose iframe's body contains some scripts to run on successful upload.
 				*/
-				img = img.substring(img.lastIndexOf('http:'), img.lastIndexOf(".")+4); //look for a better way to make sure we are retrieving the path to a valid image
+				img = img.substring(img.lastIndexOf(location.protocol), img.lastIndexOf(".")+4); //look for a better way to make sure we are retrieving the path to a valid image
 				//setIFrameContent(iframeId, ""); //just incase u need to put something else in the iframe, we don't want the image string conflicing with it
 				return img;
 			}
