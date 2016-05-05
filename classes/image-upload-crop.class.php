@@ -165,6 +165,11 @@ class ImageUploadCrop
 		{ 
 			$$key = $value; 
 		}
+		
+		//use short-circuiting to check if directory exists, and possibly make a new directory if it doesnt
+		is_dir($temp_directory) || mkdir($temp_directory, 0777, $recursive = true);
+		is_dir($original_image_save_directory) || mkdir($original_image_save_directory, 0777, true);
+	
 		$width  = isset($_POST['width'])  ? $_POST['width']  : $width;
 		$height = isset($_POST['height']) ? $_POST['height'] : $height;
 		$arr    = array( 
